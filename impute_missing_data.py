@@ -5,14 +5,6 @@ A script for missing data imputation using latent variable models, as explained 
 import numpy as np
 from scipy.special import logsumexp
 import pandas as pd
-from argparse import ArgumentParser
-
-def parse_args():
-    parser = ArgumentParser()
-    parser.add_argument('-out', type=str, help='path to output folder (default: same folder as the script)', default='./')
-    parser.add_argument('-nbins', type=int, default=10, help='number of bins for discretization (default: 10)')
-    args = parser.parse_args()
-    return args
 
 def cont_to_discrete(x, nbins=None, bins=None, eps=1e-9):
     '''
