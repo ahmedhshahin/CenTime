@@ -5,6 +5,15 @@ A script for missing data imputation using latent variable models, as explained 
 import numpy as np
 from scipy.special import logsumexp
 import pandas as pd
+from argparse import ArgumentParser
+import matplotlib.pyplot as plt
+
+def parse_args():
+    parser = ArgumentParser()
+    parser.add_argument('-out', type=str, help='path to output folder (default: same folder as the script)', default='./')
+    parser.add_argument('-nbins', type=int, default=10, help='number of bins for discretization (default: 10)')
+    args = parser.parse_args()
+    return args
 
 def cont_to_discrete(x, nbins=None, bins=None, eps=1e-9):
     '''
@@ -15,11 +24,19 @@ def cont_to_discrete(x, nbins=None, bins=None, eps=1e-9):
         bins: bin locations (nbins + 1) -- bins[0] is the leftmost bin edge (minimum of x), bins[-1] is the rightmost bin edge (maximum of x)
     '''
     assert (bins is not None) or (nbins is not None)
-    if bins is None: bins = [np.nanquantile(x, i/nbins) for i in range(nbins+1)]
+    if bins is None:
+        bins = [np.nanquantile(x, i/nbins) for i in range(nbins+1)]
+        clamp = False
+    else:
+        nbins = len(bins) - 1
+        clamp = True
     bins[-1] += eps # to include the maximum value of x in the last bin
     y = np.copy(x)
     y = np.digitize(x, bins) - 1
     y = y.astype(float)
+    if clamp: # clamp values outside the bins to the leftmost and rightmost bins
+        y[y < 0] = 0
+        y[y >= nbins] = nbins - 1
     y[np.isnan(x)] = np.nan
     return y, bins
 
@@ -35,23 +52,30 @@ def discrete_to_cont(y, bins):
     y: vector of discrete values
     bins: bin locations (nbins + 1)
     '''
-    assert len(bins) == len(set(y)) + 1
     assert not np.isnan(y).all()
     representative_values = get_representative_bin_value(bins)
     return np.array([representative_values[int(i)] for i in y])
 
-def discretize_df(df, feats, nbins, continuous_feats):
+def discretize_df(df, feats, nbins, continuous_feats, bins=None):
     '''
     Discretizes the continuous features in a dataframe using equal-frequency binning.
     Returns the discretized dataframe and the bins used for discretization.
     nbins: a list of number of bins for each feature in continuous_feats
+    continuous_feats: a list of continuous features to be discretized
+    bins: a dictionary of bins' locations for each (originally) continuous feature. Features not in bins are originally discrete and kept as is. (default: None, compute bins from data). If provided, nbins is ignored.
     '''
     df = df.copy()
-    assert len(continuous_feats) == len(nbins)
-    bins = {}
-    df = df[feats]
-    for i, f in enumerate(continuous_feats):
-        df[f], bins[f] = cont_to_discrete(df[f].values, nbins=nbins[i])
+    assert (bins is not None) or (nbins is not None)
+    assert (bins is None) or (nbins is None)
+    if bins is None:
+        assert len(continuous_feats) == len(nbins)
+        bins = {}
+        df = df[feats]
+        for i, f in enumerate(continuous_feats):
+            df[f], bins[f] = cont_to_discrete(df[f].values, nbins=nbins[i])
+    else:
+        for f in continuous_feats:
+            df[f], _ = cont_to_discrete(df[f].values, bins=bins[f])
     return df, bins
 
 def to_continuous_df(x, bins, feats, continuous_feats, original_df):
@@ -80,6 +104,8 @@ def condp(x, dist_var=None):
     if dist_var is None:
         return x / np.sum(x)
     else:
+        if np.sum(x) == 0:
+            return None
         return x / np.sum(x, axis=dist_var, keepdims=True)
 
 def condexp(x, dist_var=None):
@@ -129,14 +155,14 @@ class MixtureOfCategoricals():
 
         # initialize parameters
         self.logph  = condlogp(np.log(np.random.rand(H) + self.eps))
-        self.logpxh = [condlogp(np.log(np.random.rand(H, num_categories[d]) + self.eps)) for d in range(self.D)]
+        self.logpxgh = [condlogp(np.log(np.random.rand(H, num_categories[d]) + self.eps), dist_var=1) for d in range(self.D)]
     
     def fit(self):
         '''
         Fits the model using EM.
         '''
         logph = self.logph
-        logpxh = self.logpxh
+        logpxgh = self.logpxgh
         for iter in range(self.max_iter):
             htot = np.zeros(self.H) # sum of p(h) over all data points
             xhtot = [np.zeros((self.H, self.num_categories[d])) for d in range(self.D)] # sum of p(x|h) over all data points
@@ -155,12 +181,12 @@ class MixtureOfCategoricals():
                         # compute log q(x_m, h | x)
                         # observed features
                         for f_idx in class_indices[c]:
-                            logqhtildegx[f_idx][:, c] += logpxh[f_idx][:, c]
-                            logqhgx += logpxh[f_idx][:, c]
+                            logqhtildegx[f_idx][:, c] += logpxgh[f_idx][:, c]
+                            logqhgx += logpxgh[f_idx][:, c]
                         # missing features
                         for f_idx in missing_idx:
                             # if c is a valid category for feature f_idx
-                            if c < self.num_categories[f_idx]: logqhtildegx[f_idx][:, c] += logpxh[f_idx][:, c]
+                            if c < self.num_categories[f_idx]: logqhtildegx[f_idx][:, c] += logpxgh[f_idx][:, c]
                     
                     # all possible combinations of missing features
                     combs = np.array(np.meshgrid(*[np.arange(self.num_categories[m]).tolist() for m in missing_idx])).T.reshape(-1,len(missing_idx))
@@ -169,7 +195,8 @@ class MixtureOfCategoricals():
                     temp = logqhgx.copy()
                     for j, f_idx in enumerate(missing_idx):
                         temp += logqhtildegx[f_idx][:, combs[:, j]].sum(axis=1)
-                    htot += condexp(temp)
+                    # htot += condexp(temp)
+                    htot += condp(temp)
 
                     qhtildegx = [condexp(logqhtildegx[d]) for d in range(self.D)]
                     qhgx = condexp(logqhgx)
@@ -178,7 +205,7 @@ class MixtureOfCategoricals():
                     logqhgx = logph.copy() # log q(h|x)
                     for c in range(self.num_categories.max()):
                         class_indices[c] = np.where(self.x[n] == c)[0]
-                        for f_idx in class_indices[c]: logqhgx += logpxh[f_idx][:, c]
+                        for f_idx in class_indices[c]: logqhgx += logpxgh[f_idx][:, c]
                     qhgx = condexp(logqhgx)
                     htot += qhgx
 
@@ -195,19 +222,49 @@ class MixtureOfCategoricals():
             # update parameters
             htot = condp(htot)
             logph = np.log(htot + self.eps)
-            logpxh = [np.log(condp(xhtot[d], dist_var=1) + self.eps) for d in range(self.D)]
+            logpxgh = [np.log(condp(xhtot[d], dist_var=1) + self.eps) for d in range(self.D)]
 
             # update history
             self.history.append(loglik)
 
             # print log likelihood
-            if self.verbose: print('iter: {}, loglik: {}'.format(iter, loglik))
+            if self.verbose and iter % 100 == 0: print('iter: {}, loglik: {}'.format(iter, loglik))
 
             # check convergence
             if iter > 0 and np.abs(self.history[-1] - self.history[-2]) < self.convergence_threshold: break
             
         self.logph = logph
-        self.logpxh = logpxh
+        self.logpxgh = logpxgh
+    
+    def verify_likelihood(self):
+        '''
+        Verifies that the data likelihood is monotonic non-decreasing with iterations.
+        '''
+        if len(self.history) == 0:
+            print('Please run fit() first.')
+            return
+        _ok = True
+        plt.plot(self.history)
+        plt.show()
+        plt.close()
+        for i in range(len(self.history)-1):
+            if self.history[i+1] < self.history[i]:
+                _ok = False
+                break
+        return _ok
+
+    def compute_log_likelihood(self, x):
+        logph = self.logph
+        logpxgh = self.logpxgh
+        class_indices = {} # indices of features that have value c
+        loglik = 0
+        for n in range(x.shape[0]):
+            logqhgx = logph.copy() # log q(h|x)
+            for c in range(self.num_categories.max()):
+                class_indices[c] = np.where(x[n] == c)[0]
+                for f_idx in class_indices[c]: logqhgx += logpxgh[f_idx][:, c]
+            loglik += logsumexp(logqhgx)
+        return loglik
 
     def predict(self, x, selection='max', return_prob=False):
         '''
@@ -236,7 +293,7 @@ class MixtureOfCategoricals():
             logpxm_given_xo = self.logph.copy()
             for c in range(self.num_categories.max()):
                 class_indices = np.where(x[n] == c)[0]
-                for f_idx in class_indices: logpxm_given_xo += self.logpxh[f_idx][:, c]
+                for f_idx in class_indices: logpxm_given_xo += self.logpxgh[f_idx][:, c]
             
             # all possible combinations of missing features
             combs = np.array(np.meshgrid(*[np.arange(self.num_categories[m]).tolist() for m in missing_idx])).T.reshape(-1,len(missing_idx))
@@ -245,7 +302,7 @@ class MixtureOfCategoricals():
             logpxm_given_xo = logpxm_given_xo[:, np.newaxis].repeat(len(combs), 1)
             for i in range(len(combs)):
                 for j, f_idx in enumerate(missing_idx):
-                    logpxm_given_xo[:,i] += self.logpxh[f_idx][:, combs[i, j]]
+                    logpxm_given_xo[:,i] += self.logpxgh[f_idx][:, combs[i, j]]
             logpxm_given_xo = logsumexp(logpxm_given_xo, axis=0)
 
             # normalize
