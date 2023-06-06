@@ -1,5 +1,4 @@
 from torch.utils.data import DataLoader
-# from data_loaders import LyonDataset, SSLLoader
 # from inception_resnet2_7 import InceptionResNetV2
 # from inception_resnet_v2 import InceptionResNetV2
 import torch
@@ -277,7 +276,7 @@ if __name__ == '__main__':
     # model = InceptionResNetV2(classes=1, mode='finetune')
     model = generate_resnet3d(classes=1, model_depth=18, in_channels=1, normalization='in', n_attention=2)
     if args.task == 'surv':
-        dl = LyonDataset(root_dir='/SAN/medic/IPF', split='train', fold=args.fold, patient=args.patient, ipf_only=True, follow_up=args.followup)
+#         dl = dataset class
         model.load_state_dict(torch.load('/home/ashahin/codes/survival_analysis/checkpoints/att2/resnet3d_18/resnet3d_18_{}.pt'.format(args.fold), map_location='cpu')['model_state_dict'])
         # model.load_state_dict(torch.load('/home/ashahin/codes/survival_analysis/checkpoints/ipf_no_depth_fix_transplant/inception_resnet2/inception_resnet2_{}.pt'.format(args.fold), map_location=torch.device('cpu'))['model_state_dict'])
         # model.load_state_dict(torch.load('/home/ashahin/codes/survival_analysis/checkpoints/inception_resnet2_lr1e-3_sgd_cosine_augment/inception_resnet2/inception_resnet2_3.pt', map_location=torch.device('cpu'))['model_state_dict'])
