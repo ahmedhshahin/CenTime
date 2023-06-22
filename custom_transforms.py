@@ -4,12 +4,8 @@ from typing import Any, List, Sequence, Tuple
 from torch import Tensor
 import numbers
 from PIL import Image
-import torch.nn.functional as F
 import numpy as np
 import cv2
-from scipy.ndimage import zoom
-from skimage.filters import gaussian
-import monai
 
 def _is_pil_image(img: Any) -> bool:
     return isinstance(img, Image.Image)

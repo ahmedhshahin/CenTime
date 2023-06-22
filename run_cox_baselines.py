@@ -11,8 +11,8 @@ from pandas.core.algorithms import mode
 pd.options.display.max_rows = 999
 
 # Env
-from utils import CI_pm
-from utils import makeKaplanMeierPlot
+from eval_utils import CI_pm
+from eval_utils import makeKaplanMeierPlot
 
 
 eps = 1e-9

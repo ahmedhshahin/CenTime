@@ -4,13 +4,9 @@ import random
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
-from torch.nn.functional import l1_loss
-from torch.nn.modules import normalization
-from torch.utils.data import DataLoader
 
-from networks import define_optimizer, define_scheduler, get_model
-from utils import count_parameters, weights_init_model, get_loaders, CIndex_lifeline, CoxLoss, CIndexIPCW
-from scipy import special
+from utils import get_optimizer, get_model
+from eval_utils import count_parameters, get_loaders, CIndex_lifeline, CoxLoss, CIndexIPCW
 
 def train_test(opt, fold, device, writer):
     torch.use_deterministic_algorithms(False)
@@ -28,8 +24,7 @@ def train_test(opt, fold, device, writer):
 
     # weights_init_model(opt, model)
 
-    optimizer = define_optimizer(opt,model.parameters())
-    scheduler = define_scheduler(opt, optimizer)
+    optimizer = get_optimizer(opt,model.parameters())
 
     print("Number of Trainable Parameters: %d" % count_parameters(model))
     print("Optimizer Type:", opt.optimizer_type)
@@ -114,12 +109,6 @@ def train_test(opt, fold, device, writer):
         writer.add_scalars('fold{}/CoxLoss'.format(fold), {'train':loss_total, 'test': loss_total_te}, epoch)
         writer.add_scalar('fold{}/CIndex'.format(fold), cindex_te, epoch)
         writer.add_scalar('fold{}/CIndexIPCW'.format(fold), cindex_ipcw_te, epoch)
-
-        if scheduler is not None:
-            if opt.lr_policy=='reduce_lr_on_plateau':
-                scheduler.step(loss_total_te)
-            else:
-                scheduler.step()
     return best_cindex
 
 def test_random_batch(opt, model, fold, test_loader, device):

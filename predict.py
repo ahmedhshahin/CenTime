@@ -1,6 +1,6 @@
 from data_loaders import OSICDataset
 from torch.utils.data import DataLoader
-from networks import get_model
+from utils import get_model
 import torch
 import os
 import numpy as np

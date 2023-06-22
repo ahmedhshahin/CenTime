@@ -8,8 +8,8 @@ from torch.nn.functional import l1_loss
 from torch.nn.modules import normalization
 from torch.utils.data import DataLoader
 
-from networks import define_optimizer, define_scheduler, get_model
-from utils import count_parameters, weights_init_model, get_loaders, CIndex_lifeline, CoxLoss, log_discretized_logistic
+from utils import get_optimizer, get_model
+from eval_utils import count_parameters, weights_init_model, get_loaders, CIndex_lifeline, CoxLoss, log_discretized_logistic
 from scipy import special
 from pycox.models.data import pair_rank_mat
 
@@ -18,7 +18,7 @@ def get_loss(opt):
         from pycox.models.loss import DeepHitSingleLoss
         loss = DeepHitSingleLoss(alpha=opt.alpha, sigma=0.1)
     if opt.loss_fn == 'discretized_logistic':
-        from utils import DeepHitDiscretizedLogistic
+        from eval_utils import DeepHitDiscretizedLogistic
         loss = DeepHitDiscretizedLogistic(alpha=opt.alpha, sigma=0.1)
     return loss
 
@@ -35,8 +35,8 @@ def train_test(opt, fold, device, writer):
     loss_fn = get_loss(opt)
     # weights_init_model(opt, model)
 
-    optimizer = define_optimizer(opt,model.parameters())
-    scheduler = define_scheduler(opt, optimizer)
+    optimizer = get_optimizer(opt,model.parameters())
+    scheduler = get_scheduler(opt, optimizer)
 
     print("Number of Trainable Parameters: %d" % count_parameters(model))
     print("Optimizer Type:", opt.optimizer_type)
