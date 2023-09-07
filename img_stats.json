@@ -1,0 +1,53 @@
+{
+    "_discription": "Image data statistics on training data for the five folds. The first level is the fold number, the second level is whether or not the lungs have been segmented, and the third level is the mean and standard deviation of the image data.",
+    "1": {
+        "True": [
+            0.1412668,
+            0.32190657
+        ],
+        "False": [
+            0.4189732,
+            0.42153254
+        ]
+    },
+    "2": {
+        "True": [
+            0.1414228,
+            0.32215095
+        ],
+        "False": [
+            0.42048037,
+            0.4220326
+        ]
+    },
+    "3": {
+        "True": [
+            0.14095187,
+            0.3217759
+        ],
+        "False": [
+            0.41828218,
+            0.42157352
+        ]
+    },
+    "4": {
+        "True": [
+            0.14054713,
+            0.3214746
+        ],
+        "False": [
+            0.41818705,
+            0.4217041
+        ]
+    },
+    "5": {
+        "True": [
+            0.13998446,
+            0.32050282
+        ],
+        "False": [
+            0.4197954,
+            0.4220716
+        ]
+    }
+}
