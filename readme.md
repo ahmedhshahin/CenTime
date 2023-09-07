@@ -1,7 +1,16 @@
 # CenTime: Event-Conditional Modelling of Censoring in Survival Analysis
 
-[![arXiv](https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg)](https://arxiv.org/abs/1234.56789)
-[![arXiv](https://img.shields.io/badge/arXiv-2203.11391-b31b1b.svg)](https://arxiv.org/abs/2203.11391)
+<p align="center">
+      <a href="https://arxiv.org/abs/1234.56789">
+        <img alt="arxiv1" src="https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg">
+    </a>    
+     <a href="https://arxiv.org/abs/2203.11391">
+        <img alt="arxiv2" src="https://img.shields.io/badge/arXiv-2203.11391-b31b1b.svg">
+    </a>    
+     <a href="https://github.com/psf/black">
+        <img alt="maintenance" src="https://img.shields.io/badge/Code%20style-black-000000.svg">
+    </a>  
+</p>
 
 ## Overview
 
