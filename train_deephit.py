@@ -14,7 +14,7 @@ import numpy as np
 import torch
 
 from eval_utils import cindex, mae, rae
-from likelihoods import deephit_loss
+from losses import deephit_loss
 from utils import (
     collect_batch_stats,
     get_data,

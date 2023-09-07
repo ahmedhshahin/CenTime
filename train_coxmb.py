@@ -13,7 +13,7 @@ import numpy as np
 import torch
 
 from eval_utils import cindex, get_median_survival_cox, mae, rae
-from likelihoods import cox_loss
+from losses import cox_loss
 from train_cox import load_checkpoint, test
 from utils import (
     collect_batch_stats,

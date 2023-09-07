@@ -15,7 +15,7 @@ import numpy as np
 import torch
 
 from eval_utils import cindex, mae, rae
-from likelihoods import (
+from losses import (
     classical_loss,
     centime_loss,
     get_mean_prediction,
