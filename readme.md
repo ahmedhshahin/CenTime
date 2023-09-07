@@ -7,7 +7,7 @@
     <a href="https://arxiv.org/abs/2203.11391">
         <img alt="arxiv2" src="https://img.shields.io/badge/arXiv-2203.11391-b31b1b.svg">
     </a>
-     <a href="https://pytorch.org/">
+     <a href="https://pytorch.org/get-started/previous-versions/#v191">
         <img alt="maintenance" src="https://img.shields.io/badge/PyTorch-1.9.1-ee4c2c.svg">
     </a>
      <a href="https://github.com/psf/black">
