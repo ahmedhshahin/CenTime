@@ -24,7 +24,7 @@ This repository contains the code for the paper
 > A. H. Shahin, A. Zhao, A. C. Whitehead, D. C. Alexander, J. Jacob, D. Barber. _CenTime: Event-Conditional Modelling of Censoring in Survival Analysis_. [[arXiv]](https://arxiv.org/abs/1234.56789)
 
 We also include the code for our prequel paper published in the International Conference on Medical Imaging with Deep Learning (MIDL) 2022
-> A. H. Shahin, J. Jacob, D. C. Alexander, D. Barber. _Survival Analysis for Idiopathic Pulmonary Fibrosis using CT Images and Incomplete Clinical Data_. [[arXiv]](https://arxiv.org/abs/2203.11391) [[OpenReview]](https://openreview.net/forum?id=1234.56789) [[PMLR]](https://proceedings.mlr.press/v172/shahin22a.html)
+> A. H. Shahin, J. Jacob, D. C. Alexander, D. Barber. _Survival Analysis for Idiopathic Pulmonary Fibrosis using CT Images and Incomplete Clinical Data_. [[arXiv]](https://arxiv.org/abs/2203.11391) [[OpenReview]]([https://openreview.net/forum?id=1234.56789](https://openreview.net/forum?id=YWDmiiJ4hYP)) [[PMLR]](https://proceedings.mlr.press/v172/shahin22a.html)
 
 If you use these tools or methods in your publications, please consider citing the accompanying papers with a BibTeX entry similar to the following:
 
