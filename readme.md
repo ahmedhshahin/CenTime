@@ -13,7 +13,7 @@
      <a href="https://github.com/psf/black">
         <img alt="maintenance" src="https://img.shields.io/badge/Code%20style-black-000000.svg">
     </a>
-    <a href="https://www.osicild.org">
+    <a href="https://www.osicild.org/dr-about.html">
         <img alt="OSIC" src="https://img.shields.io/badge/Dataset-OSIC%20-27aae1.svg">
     </a>
 </p>
