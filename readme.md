@@ -1,15 +1,21 @@
 # CenTime: Event-Conditional Modelling of Censoring in Survival Analysis
 
 <p align="center">
-      <a href="https://arxiv.org/abs/1234.56789">
+    <a href="https://arxiv.org/abs/1234.56789">
         <img alt="arxiv1" src="https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg">
-    </a>    
-     <a href="https://arxiv.org/abs/2203.11391">
+    </a>
+    <a href="https://arxiv.org/abs/2203.11391">
         <img alt="arxiv2" src="https://img.shields.io/badge/arXiv-2203.11391-b31b1b.svg">
-    </a>    
+    </a>
+     <a href="https://https://pytorch.org/">
+        <img alt="maintenance" src="https://img.shields.io/badge/PyTorch-1.9.1-ee4c2c.svg">
+    </a>
      <a href="https://github.com/psf/black">
         <img alt="maintenance" src="https://img.shields.io/badge/Code%20style-black-000000.svg">
-    </a>  
+    </a>
+    <a href="https://www.osicild.org">
+        <img alt="OSIC" src="https://img.shields.io/badge/Dataset-OSIC%20-27aae1.svg">
+    </a>
 </p>
 
 ## Overview
