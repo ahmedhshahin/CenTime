@@ -1,8 +1,8 @@
 # CenTime: Event-Conditional Modelling of Censoring in Survival Analysis
 
 <p align="center">
-    <a href="https://arxiv.org/abs/1234.56789">
-        <img alt="arxiv1" src="https://img.shields.io/badge/arXiv-1234.56789-b31b1b.svg">
+    <a href="https://arxiv.org/abs/2309.03851">
+        <img alt="arxiv1" src="https://img.shields.io/badge/arXiv-2309.03851-b31b1b.svg">
     </a>
     <a href="https://arxiv.org/abs/2203.11391">
         <img alt="arxiv2" src="https://img.shields.io/badge/arXiv-2203.11391-b31b1b.svg">
@@ -21,7 +21,7 @@
 ## Overview
 
 This repository contains the code for the paper
-> A. H. Shahin, A. Zhao, A. C. Whitehead, D. C. Alexander, J. Jacob, D. Barber. _CenTime: Event-Conditional Modelling of Censoring in Survival Analysis_. [[arXiv]](https://arxiv.org/abs/1234.56789)
+> A. H. Shahin, A. Zhao, A. C. Whitehead, D. C. Alexander, J. Jacob, D. Barber. _CenTime: Event-Conditional Modelling of Censoring in Survival Analysis_. [[arXiv]](https://arxiv.org/abs/2309.03851)
 
 We also include the code for our prequel paper published in the International Conference on Medical Imaging with Deep Learning (MIDL) 2022
 > A. H. Shahin, J. Jacob, D. C. Alexander, D. Barber. _Survival Analysis for Idiopathic Pulmonary Fibrosis using CT Images and Incomplete Clinical Data_. [[arXiv]](https://arxiv.org/abs/2203.11391) [[OpenReview]](https://openreview.net/forum?id=YWDmiiJ4hYP) [[PMLR]](https://proceedings.mlr.press/v172/shahin22a.html)
@@ -32,7 +32,7 @@ If you use these tools or methods in your publications, please consider citing t
 @article{shahin2023centime,
     title={CenTime: Event-Conditional Modelling of Censoring in Survival Analysis},
     author={Shahin, Ahmed H. and Zhao, An and Whitehead, Alexander C. and Alexander, Daniel C. and Jacob, Joseph and Barber, David},
-    journal={arXiv preprint arXiv:1234.56789},
+    journal={arXiv preprint arXiv:2309.03851},
     year={2023}
 }
 
@@ -64,7 +64,7 @@ In addition, the methods are quite general and can be applied to any survival an
 
 ### Usage
 
-We assume that the code is exceuted from the root directory of the repository.
+We assume that the code is executed from the root directory of the repository.
 
 #### Dataset Class
 
@@ -76,7 +76,7 @@ First, you will need to write a custom [pytorch dataset class](https://pytorch.o
 - `pid_sids`: a tuple of shape `(1,)` that contains the patient ID and the study ID for the current sample. This is used to group the scans of the same patient together.
 - `clinical_data` (optional): a tensor of shape `(D,)` that contains the clinical data for the current sample, `D` is the number of clinical features after pre-processing. This is used to condition the model on the clinical data. If you do not have clinical data, you can ignore this key.
 
-Preprocessing details is provided in the paper. We used the following preprocessing steps:
+Preprocessing details are provided in the paper. We used the following preprocessing steps:
 
 - CT scans
   - Resampling to a common voxel size of 1mm x 1mm x 1mm
