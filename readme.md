@@ -79,8 +79,8 @@ First, you will need to write a custom [pytorch dataset class](https://pytorch.o
 Preprocessing details are provided in the paper. We used the following preprocessing steps:
 
 - CT scans
-  - Resampling to a common voxel size of 1mm x 1mm x 1mm
-  - Cropping to the lung area
+  - Resample to a common voxel size of 1mm x 1mm x 1mm
+  - Crop to the lung area
   - Pad to the largest dimension
   - Resize to 256 x 256 x 256
   - Apply Hounsfield Unit (HU) windowing to [-1024, 150]
