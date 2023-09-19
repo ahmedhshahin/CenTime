@@ -68,7 +68,7 @@ We assume that the code is executed from the root directory of the repository.
 
 #### Dataset Class
 
-First, you will need to write a custom [pytorch dataset class](https://pytorch.org/tutorials/beginner/data_loading_tutorial.html#dataset-class) that loads your data. You should place it in the `dataset.py` file. The dataset class should return a dictionary with the following keys:
+First, you will need to write a custom [pytorch dataset class](https://pytorch.org/tutorials/beginner/data_loading_tutorial.html#dataset-class) that loads your data. You should place it in the `dataset.py` file. The __getitem__ function in the dataset class should return a dictionary with the following keys:
 
 - `img`: a tensor of shape `(C, H, W)` where `C` is the number of channels, `H` is the height, and `W` is the width.
 - `time_to_event`: a tensor of shape `(1,)` that contains the time to event for the current sample. This is the time at which the event occurred (for an uncensored sample) or the time at which the sample was censored (for a censored sample).
