@@ -1,6 +1,9 @@
 # CenTime: Event-Conditional Modelling of Censoring in Survival Analysis
 
 <p align="center">
+    <a href="https://www.sciencedirect.com/science/article/pii/S1361841523002761">
+        <img alt="maintenance" src="https://img.shields.io/badge/Medical%20Image%20Analysis-ee4c2c.svg">
+    </a>
     <a href="https://arxiv.org/abs/2309.03851">
         <img alt="arxiv1" src="https://img.shields.io/badge/arXiv-2309.03851-b31b1b.svg">
     </a>
@@ -21,7 +24,7 @@
 ## Overview
 
 This repository contains the code for the paper
-> A. H. Shahin, A. Zhao, A. C. Whitehead, D. C. Alexander, J. Jacob, D. Barber. _CenTime: Event-Conditional Modelling of Censoring in Survival Analysis_. [[arXiv]](https://arxiv.org/abs/2309.03851)
+> A. H. Shahin, A. Zhao, A. C. Whitehead, D. C. Alexander, J. Jacob, D. Barber. _CenTime: Event-Conditional Modelling of Censoring in Survival Analysis_. [[arXiv]](https://arxiv.org/abs/2309.03851) [[Medical Image Analysis]](https://www.sciencedirect.com/science/article/pii/S1361841523002761)
 
 We also include the code for our prequel paper published in the International Conference on Medical Imaging with Deep Learning (MIDL) 2022
 > A. H. Shahin, J. Jacob, D. C. Alexander, D. Barber. _Survival Analysis for Idiopathic Pulmonary Fibrosis using CT Images and Incomplete Clinical Data_. [[arXiv]](https://arxiv.org/abs/2203.11391) [[OpenReview]](https://openreview.net/forum?id=YWDmiiJ4hYP) [[PMLR]](https://proceedings.mlr.press/v172/shahin22a.html)
@@ -30,10 +33,16 @@ If you use these tools or methods in your publications, please consider citing t
 
 ```
 @article{shahin2023centime,
-    title={CenTime: Event-Conditional Modelling of Censoring in Survival Analysis},
-    author={Shahin, Ahmed H. and Zhao, An and Whitehead, Alexander C. and Alexander, Daniel C. and Jacob, Joseph and Barber, David},
-    journal={arXiv preprint arXiv:2309.03851},
-    year={2023}
+title = {CenTime: Event-conditional modelling of censoring in survival analysis},
+author = {Ahmed H. Shahin and An Zhao and Alexander C. Whitehead and Daniel C. Alexander and Joseph Jacob and David Barber},
+journal = {Medical Image Analysis},
+volume = {91},
+pages = {103016},
+year = {2024},
+issn = {1361-8415},
+doi = {https://doi.org/10.1016/j.media.2023.103016},
+url = {https://www.sciencedirect.com/science/article/pii/S1361841523002761},
+keywords = {Survival Analysis, Deep Learning, Censoring},
 }
 
 @InProceedings{shahin22a,
