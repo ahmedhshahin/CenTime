@@ -9,8 +9,10 @@ Author: Ahmed H. Shahin
 Date: 31/8/2023
 """
 
-import torch
 import numpy as np
+
+# pylint: disable=no-member
+import torch
 from torch import Tensor
 
 
@@ -144,6 +146,25 @@ def get_probs(
     )
 
 
+def _get_censoring_mask(cens_time: Tensor, tmax: float) -> Tensor:
+    r"""
+    Helper function to get the mask to be used for the censored observations term in the likelihood. For each censored observation, the mask is 1 for all possible event times greater than the censoring time.
+
+    Args:
+        cens_time: (torch.Tensor):
+            The censored times. Shape: (n_samples, 1).
+        tmax: (float):
+            The maximum possible survival time. Must be greater than all observed event times.
+
+    Returns:
+        torch.Tensor:
+            The mask for the censored observations. Shape: (n_samples, tmax).
+    """
+    trange = torch.arange(1, tmax + 1, device=cens_time.device).view(1, -1)
+    mask = trange > cens_time
+    return mask
+
+
 # Loss Functions
 def classical_loss(
     loc: Tensor,
@@ -152,7 +173,7 @@ def classical_loss(
     time: Tensor,
     tmax: int,
     distribution: str = "discretized_gaussian",
-) -> (Tensor, Tensor):
+) -> tuple[Tensor, Tensor]:
     """
     Compute classical loss for survival analysis.
 
@@ -178,9 +199,11 @@ def classical_loss(
         loc,
         var,
         tmax,
-        discretized_gaussian
-        if distribution == "discretized_gaussian"
-        else discretized_logistic,
+        (
+            discretized_gaussian
+            if distribution == "discretized_gaussian"
+            else discretized_logistic
+        ),
     )
     logp_cens = logp[~delta]
     logp_uncens = logp[delta]
@@ -188,10 +211,11 @@ def classical_loss(
         1, uncens_time - 1
     ).sum()  # Adjust for 0-based indexing
 
-    loss_cens = 0
-    for c_time, _logp in zip(cens_time, logp_cens):
-        loss_cens += torch.logsumexp(_logp[c_time:], 0)
-    loss_cens = -loss_cens / len(time)
+    cens_mask = _get_censoring_mask(cens_time, tmax)
+
+    # ignore values in logp at times less than cens_time when computing logsumexp
+    logp_cens[~cens_mask] = -float("inf")
+    loss_cens = -torch.logsumexp(logp_cens, 1).sum() / len(time)
 
     loss_uncens = -loss_uncens / len(time)
     return loss_cens, loss_uncens
@@ -204,7 +228,7 @@ def centime_loss(
     time: Tensor,
     tmax: int,
     distribution: str = "discretized_gaussian",
-) -> (Tensor, Tensor):
+) -> tuple[Tensor, Tensor]:
     """
     Compute the centime loss for survival analysis.
 
@@ -230,9 +254,11 @@ def centime_loss(
         loc,
         var,
         tmax,
-        discretized_gaussian
-        if distribution == "discretized_gaussian"
-        else discretized_logistic,
+        (
+            discretized_gaussian
+            if distribution == "discretized_gaussian"
+            else discretized_logistic
+        ),
     )
     logp_cens = logp[~delta]
     logp_uncens = logp[delta]
@@ -240,11 +266,18 @@ def centime_loss(
         1, uncens_time - 1
     ).sum()  # Adjust for 0-based indexing
 
-    loss_cens = 0
-    for c_time, _logp in zip(cens_time, logp_cens):
-        factor = torch.arange(c_time[0], float(tmax), device=loc.device).log()
-        loss_cens += torch.logsumexp(_logp[c_time:] - factor, 0)
-    loss_cens = -loss_cens / len(time)
+    cens_mask = _get_censoring_mask(cens_time, tmax)
+    factor = (
+        torch.arange(tmax, device=loc.device)
+        .view(1, -1)
+        .repeat(cens_time.shape[0], 1)
+        .log()
+    )
+
+    # ignore values in logp at times less than cens_time when computing logsumexp
+    logp_cens[~cens_mask] = -float("inf")
+    factor[~cens_mask] = 0
+    loss_cens = -torch.logsumexp(logp_cens - factor, 1).sum() / len(time)
 
     loss_uncens = -loss_uncens / len(time)
     return loss_cens, loss_uncens
