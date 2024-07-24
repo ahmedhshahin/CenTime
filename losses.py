@@ -83,7 +83,7 @@ def discretized_gaussian(
     """
     trange = torch.arange(1, float(tmax) + 1, device=loc.device)
     log_probs = -((trange - loc) ** 2) / (2 * var + 1e-8)
-    log_probs -= torch.logsumexp(log_probs, dim=1, keepdim=True)
+    log_probs = log_probs - torch.logsumexp(log_probs, dim=1, keepdim=True)
     return log_probs if not return_prob else torch.exp(log_probs)
 
 
