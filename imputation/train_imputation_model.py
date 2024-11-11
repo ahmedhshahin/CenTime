@@ -193,7 +193,7 @@ class EM:
         self.discretizer = discretizer
         self.train_data = train_data
         self.eps = 1e-10
-        self.hist = {"train_likelihood": [], "val_likelihood": []}
+        self.hist = {"train_loglikelihood": [], "val_loglikelihood": []}
         self.initialize_parameters()
 
     def initialize_parameters(self):
